@@ -2,7 +2,151 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+import { useEffect, useRef, useState } from 'react'
+
+var pStart = { x: 0, y: 0, t: 0 }
+var pStop = { x: 0, y: 0, t: 0 }
+
+function swipeStart(e, modalRef) {
+  if (typeof e['targetTouches'] !== 'undefined') {
+    var touch = e.targetTouches[0]
+    pStart.x = touch.screenX
+    pStart.y = touch.screenY
+    pStart.t = Date.now()
+  } else {
+    pStart.x = e.screenX
+    pStart.y = e.screenY
+    pStart.t = Date.now()
+  }
+
+  modalRef.current.classList.remove(styles.slide)
+}
+
+function isPullDown(dY, dX) {
+  // methods of checking slope, length, direction of line created by swipe action
+  return (
+    dY < 0 &&
+    ((Math.abs(dX) <= 100 && Math.abs(dY) >= 300) ||
+      (Math.abs(dX) / Math.abs(dY) <= 0.3 && dY >= 60))
+  )
+}
+
+function onScroll(e, modalRef) {
+  const { current: modal } = modalRef
+
+  if (!modal) return
+
+  console.log(
+    modal.offsetHeight,
+    modal.offsetTop,
+    modal.getBoundingClientRect().top
+  )
+
+  if (modal.offsetHeight) {
+  }
+}
+
+function Modal({ children, open: desiredOpen, onClose }) {
+  const [open, updateOpen] = useState(desiredOpen)
+  const [closeOffset, updateCloseOffset] = useState(0)
+  const containerRef = useRef(null)
+  const modalRef = useRef(null)
+
+  console.log(desiredOpen)
+
+  useEffect(() => {
+    if (open !== desiredOpen) updateOpen(desiredOpen)
+  }, [desiredOpen])
+
+  function swipeMove(e) {
+    if (typeof e['changedTouches'] !== 'undefined') {
+      var touch = e.changedTouches[0]
+      pStop.x = touch.screenX
+      pStop.y = touch.screenY
+      pStop.t = Date.now()
+    } else {
+      pStop.x = e.screenX
+      pStop.y = e.screenY
+      pStop.t = Date.now()
+    }
+
+    var changeY = pStart.y - pStop.y
+    if (changeY < 0) updateCloseOffset(-changeY)
+  }
+
+  function swipeEnd(e, modalRef) {
+    // if (typeof e['changedTouches'] !== 'undefined') {
+    //   var touch = e.changedTouches[0]
+    //   pStop.x = touch.screenX
+    //   pStop.y = touch.screenY
+    // } else {
+    //   pStop.x = e.screenX
+    //   pStop.y = e.screenY
+    // }
+
+    modalRef.current.classList.add(styles.slide)
+    swipeCheck()
+
+    updateCloseOffset(0)
+  }
+
+  function swipeCheck() {
+    var changeY = pStart.y - pStop.y
+    var changeX = pStart.x - pStop.x
+    var changeT = pStop.t - pStart.t
+
+    const acceleration = -changeY / changeT
+    const fastSwipe = changeY < -50 && acceleration > 0.75
+
+    if (isPullDown(changeY, changeX) || fastSwipe) {
+      onClose()
+    }
+  }
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    containerRef.current.addEventListener('touchstart', (e) =>
+      swipeStart(e, modalRef)
+    )
+
+    containerRef.current.addEventListener('touchend', (e) =>
+      swipeEnd(e, modalRef)
+    )
+
+    containerRef.current.addEventListener('touchmove', (e) => swipeMove(e))
+
+    return () => {
+      // return a cleanup function to unregister our function since its gonna run multiple times
+      if (containerRef.current)
+        containerRef.current.removeEventListener('scroll', (e) =>
+          console.log(e)
+        )
+    }
+  }, [open])
+
+  if (!open) return null
+
+  return (
+    <div ref={containerRef} className={styles.modalContainer}>
+      <div
+        ref={modalRef}
+        className={styles.modal}
+        style={{ transform: `translateY(${closeOffset}px)` }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
+  const [opened, openModal] = useState(false)
+
+  const onClose = () => {
+    openModal(false)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,6 +156,12 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        <Modal open={opened} onClose={onClose}>
+          hello world
+        </Modal>
+
+        <button onClick={() => openModal(!opened)}>open modal</button>
+
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>

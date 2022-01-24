@@ -114,3 +114,28 @@
     flex-direction: column;
   }
 }
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+  padding-top: 20vh;
+}
+
+.modal {
+  min-height: 150vh;
+  background-color: white;
+  box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+}
+
+.in {
+}
+
+.slide {
+  transition: transform 0.4s;
+}
