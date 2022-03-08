@@ -14,3 +14,33 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.page-width {
+  max-width: 1200px;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+.page-width-unpadded {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.frozen {
+  overflow: hidden;
+}
+
+.button {
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.button--left {
+  margin-left: 16px;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+}
