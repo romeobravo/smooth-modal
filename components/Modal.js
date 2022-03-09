@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styles from '../styles/Modal.module.css'
 
 const Close = () => {
@@ -22,8 +22,10 @@ const Close = () => {
   )
 }
 
-export function Modal({ children, title, open: desiredOpen, onClose }) {
-  const [open, updateOpen] = useState(desiredOpen)
+const SWIPE_AREA = 100
+
+export function Modal({ children, title, open: targetOpen, onClose, height }) {
+  const [open, updateOpen] = useState(targetOpen)
   const modalRef = useRef(null)
 
   const modalCoords = useRef({
@@ -41,19 +43,18 @@ export function Modal({ children, title, open: desiredOpen, onClose }) {
       document.body.classList.add('frozen')
     }, 10)
 
-    node.scrollTop = 100
+    node.scrollTop = SWIPE_AREA
   }, [])
 
   useEffect(() => {
-    if (!desiredOpen && open) {
-      console.log(containerRef)
+    if (!targetOpen && open) {
       close(containerRef)
     }
 
-    if (desiredOpen && !open) {
+    if (targetOpen && !open) {
       updateOpen(true)
     }
-  }, [desiredOpen])
+  }, [targetOpen])
 
   function close() {
     const container = modalRef.current.closest(`.${styles.modalContainer}`)
@@ -62,7 +63,6 @@ export function Modal({ children, title, open: desiredOpen, onClose }) {
 
     window.setTimeout(() => {
       updateOpen(false)
-      onClose()
     }, 400)
   }
 
@@ -71,20 +71,19 @@ export function Modal({ children, title, open: desiredOpen, onClose }) {
       e.target.className.includes &&
       e.target.className.includes(styles.modalContainer)
     ) {
-      close()
+      onClose()
     }
   }
 
   function onScroll(e) {
-    if (e.target.scrollTop === 100) {
+    if (e.target.scrollTop === SWIPE_AREA) {
       modalCoords.current = {
         moving: false,
         y: 0,
         t: null,
       }
     } else if (!modalCoords.current.moving) {
-      console.log('START MOVING')
-
+      // Start moving
       modalCoords.current = {
         moving: true,
         y: e.target.scrollTop,
@@ -102,20 +101,25 @@ export function Modal({ children, title, open: desiredOpen, onClose }) {
       const fastSwipe = velocity > 1
 
       if (fastSwipe) {
-        close()
+        onClose()
       } else if (node.scrollTop === 0) {
-        node.scrollTo({ top: 100, behavior: 'smooth' })
+        node.scrollTo({ top: SWIPE_AREA, behavior: 'smooth' })
       }
     }
   }
 
   if (!open) return null
 
+  const offsetTop = height ? 100 - height : 40
+
   return (
     <div
       ref={containerRef}
       className={styles.modalContainer}
       onClick={handleClick}
+      style={{
+        paddingTop: `calc(${offsetTop}vh + ${SWIPE_AREA}px)`,
+      }}
     >
       <div ref={modalRef} className={`${styles.modal}`}>
         <div className={styles.dragbarContainer}>
@@ -123,12 +127,7 @@ export function Modal({ children, title, open: desiredOpen, onClose }) {
         </div>
         <div className={styles.titlebar}>
           <div className={styles.modalTitle}>{title}</div>
-          <div
-            className={styles.close}
-            onClick={(e) => {
-              close()
-            }}
-          >
+          <div className={styles.close} onClick={(e) => onClose()}>
             <Close />
           </div>
         </div>

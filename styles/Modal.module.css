@@ -101,7 +101,8 @@
 
   .modalContainer {
     transform: translateY(0px);
-    padding-top: 0;
+    /* important required to override dynamic mobile offset */
+    padding-top: 0 !important;
     overflow: hidden;
   }
 

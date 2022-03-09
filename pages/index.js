@@ -23,7 +23,12 @@ function ProfileModal({ scrollable, opened, onClose }) {
   const ModalModule = scrollable ? Modal : StaticModal
 
   return (
-    <ModalModule open={controlledOpen} title="Profiel" onClose={onClose}>
+    <ModalModule
+      open={controlledOpen}
+      title="Profiel"
+      onClose={onClose}
+      height={80}
+    >
       {step ? (
         <ModalContent>
           <form>
@@ -140,9 +145,9 @@ export default function Home() {
     openModal(false)
   }
 
-  const scrollable =
+  const unScrollable =
     typeof window !== 'undefined' &&
-    window.location.search.includes('scroll=true')
+    window.location.search.includes('scroll=false')
 
   return (
     <div className={styles.container}>
@@ -157,7 +162,7 @@ export default function Home() {
 
         {/* <ProfileModal onClose={onClose} opened={opened} /> */}
         <ProfileModal
-          scrollable={scrollable}
+          scrollable={!unScrollable}
           onClose={onClose}
           opened={opened}
         />
