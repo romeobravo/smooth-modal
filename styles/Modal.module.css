@@ -23,7 +23,7 @@
 
 .modal {
   transform: translateY(200px);
-  min-height: calc(100vh - 16px);
+  min-height: calc(90vh);
   background-color: white;
   padding: 8px 16px 0 16px;
   border-radius: 20px 20px 0 0;

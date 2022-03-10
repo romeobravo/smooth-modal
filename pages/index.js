@@ -111,13 +111,45 @@ function ProfileModal({ scrollable, opened, onClose }) {
               <div>Budget Mobiel</div>
               <div>T-Mobile Mobiel</div>
               <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
+              <div>Budget Mobiel</div>
+              <div>T-Mobile Mobiel</div>
+              <div>Tele2 Mobiel</div>
             </div>
           </form>
         </ModalContent>
       )}
 
       <ModalActionBar>
-        <div onClick={() => updateOpen(false)}>Wissen</div>
+        <div onClick={() => onClose(false)}>Wissen</div>
         {step ? (
           <div
             className="button button--left"
@@ -126,10 +158,7 @@ function ProfileModal({ scrollable, opened, onClose }) {
             Volgende
           </div>
         ) : (
-          <div
-            className="button button--left"
-            onClick={() => updateOpen(false)}
-          >
+          <div className="button button--left" onClick={() => onClose(false)}>
             Bevestigen
           </div>
         )}
